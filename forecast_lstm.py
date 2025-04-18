@@ -22,7 +22,7 @@ def fetch_data():
     ])
 
 # === Prepare inputoutput for training ===
-def prepare_data(data, sequence_length=SEQUENCE_LENGTH)
+def prepare_data(data, sequence_length=SEQUENCE_LENGTH):
     scaler = MinMaxScaler()
     scaled = scaler.fit_transform(data)
     
@@ -34,7 +34,7 @@ def prepare_data(data, sequence_length=SEQUENCE_LENGTH)
     return np.array(X), np.array(y), scaler
 
 # === Train LSTM model ===
-def train_model(X, y)
+def train_model(X, y):
     model = Sequential()
     model.add(LSTM(64, input_shape=(X.shape[1], X.shape[2]), return_sequences=False))
     model.add(Dense(32, activation='relu'))
@@ -44,14 +44,14 @@ def train_model(X, y)
     return model
 
 # === Forecast next time step ===
-def forecast(model, scaler, last_sequence)
+def forecast(model, scaler, last_sequence):
     scaled_sequence = scaler.transform(last_sequence)
     input_seq = np.expand_dims(scaled_sequence, axis=0)  # Shape (1, 6, 3)
     prediction_scaled = model.predict(input_seq)[0]
     return scaler.inverse_transform([prediction_scaled])[0]
 
 # === Save forecast.json ===
-def save_forecast(prediction)
+def save_forecast(prediction):
     with open(FORECAST_PATH, 'w') as f
         json.dump({
             temperature round(prediction[0], 2),
