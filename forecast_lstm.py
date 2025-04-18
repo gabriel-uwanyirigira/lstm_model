@@ -60,23 +60,17 @@ def save_forecast(prediction)
         }, f, indent=2)
 
 # === Main ===
-def main()
-    print(📡 Fetching data...)
+def main():
+    print("📡 Fetching data...")
     data = fetch_data()
-
-    print(🧠 Preparing training data...)
+    print("🧠 Preparing training data...")
     X, y, scaler = prepare_data(data)
-
-    print(📈 Training LSTM model...)
+    print("📈 Training model...")
     model = train_model(X, y)
-
-    print(🔮 Forecasting next values...)
-    last_sequence = data[-SEQUENCE_LENGTH]  # Get last 6 timesteps
-    prediction = forecast(model, scaler, last_sequence)
-
-    print(💾 Saving forecast.json...)
+    print("🔮 Forecasting...")
+    prediction = forecast(model, scaler, data[-1])
+    print("💾 Saving forecast.json...")
     save_forecast(prediction)
-    print(✅ Done!)
-
+    print("✅ Done!")
 if __name__ == __main__
     main()
