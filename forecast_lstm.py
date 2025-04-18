@@ -21,16 +21,16 @@ def fetch_data():
         for f in feeds if all(f[f'field{i}'] for i in range(1, 4))
     ])
 
-# === Prepare inputoutput for training ===
+# === Prepare input/output for training ===
 def prepare_data(data, sequence_length=SEQUENCE_LENGTH):
     scaler = MinMaxScaler()
     scaled = scaler.fit_transform(data)
-    
+
     X, y = [], []
     for i in range(len(scaled) - sequence_length):
-        X.append(scaled[ii + sequence_length])
-        y.append(scaled[i + sequence_length])  # Predict next timestep
-    
+        X.append(scaled[i:i + sequence_length])
+        y.append(scaled[i + sequence_length])  # Predict the next time step
+
     return np.array(X), np.array(y), scaler
 
 # === Train LSTM model ===
@@ -52,11 +52,11 @@ def forecast(model, scaler, last_sequence):
 
 # === Save forecast.json ===
 def save_forecast(prediction):
-    with open(FORECAST_PATH, 'w') as f
+    with open(FORECAST_PATH, 'w') as f:
         json.dump({
-            temperature round(prediction[0], 2),
-            humidity round(prediction[1], 2),
-            air_quality round(prediction[2], 2)
+            "temperature": round(prediction[0], 2),
+            "humidity": round(prediction[1], 2),
+            "air_quality": round(prediction[2], 2)
         }, f, indent=2)
 
 # === Main ===
@@ -68,9 +68,10 @@ def main():
     print("📈 Training model...")
     model = train_model(X, y)
     print("🔮 Forecasting...")
-    prediction = forecast(model, scaler, data[-1])
+    prediction = forecast(model, scaler, data[-SEQUENCE_LENGTH:])
     print("💾 Saving forecast.json...")
     save_forecast(prediction)
     print("✅ Done!")
-if __name__ == __main__
+
+if __name__ == "__main__":
     main()
