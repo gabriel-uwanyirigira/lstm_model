@@ -27,7 +27,7 @@ def prepare_data(data, sequence_length=SEQUENCE_LENGTH):
     scaled = scaler.fit_transform(data)
     
     X, y = [], []
-    for i in range(len(scaled) - sequence_length)
+    for i in range(len(scaled) - sequence_length):
         X.append(scaled[ii + sequence_length])
         y.append(scaled[i + sequence_length])  # Predict next timestep
     
