@@ -13,7 +13,7 @@ SEQUENCE_LENGTH = 6  # Number of time steps used for prediction
 
 # === Fetch sensor data ===
 def fetch_data():
-    url = fhttpsapi.thingspeak.comchannels{CHANNEL_ID}feeds.jsonapi_key={READ_API_KEY}&results={NUM_RESULTS}
+    url = f"https://api.thingspeak.com/channels/{CHANNEL_ID}/feeds.json?api_key={READ_API_KEY}&results={NUM_RESULTS}"
     r = requests.get(url)
     feeds = r.json()['feeds']
     return np.array([
