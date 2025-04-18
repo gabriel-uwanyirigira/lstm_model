@@ -1,3 +1,47 @@
+name: Forecast
+permissions:
+  contents: write
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # every 15 minutes
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Set up Python 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Install system dependencies required for TensorFlow
+      - name: Install system dependencies
+        run: sudo apt-get install -y python3-dev python3-pip libcupti-dev
+
+      # Install TensorFlow and other dependencies
+      - name: Install dependencies
+        run: pip install tensorflow==2.10.0 scikit-learn requests "numpy<2.0.0"
+
+      # Run the retraining and forecast Python script
+      - name: Run retraining script
+        run: python forecast_lstm.py
+
+      # Commit and push the forecast.json file
+      - name: Commit and push forecast
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add forecast.json
+          git commit -m "🔄 Auto-update forecast" || echo "No changes to commit"
+          git pull --rebase origin main
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/gabriel-uwanyirigira/lstm_model.git HEAD:main
+
 name: 📈 LSTM Forecast & Push
 
 on:
