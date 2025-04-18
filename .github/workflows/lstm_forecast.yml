@@ -1,4 +1,4 @@
-name: Forecast
+name: 📈 LSTM Forecast & Push
 permissions:
   contents: write
 on:
@@ -41,46 +41,3 @@ jobs:
           git commit -m "🔄 Auto-update forecast" || echo "No changes to commit"
           git pull --rebase origin main
           git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/gabriel-uwanyirigira/lstm_model.git HEAD:main
-
-name: 📈 LSTM Forecast & Push
-
-on:
-  schedule:
-    - cron: '0 * * * *'  # Every hour
-  workflow_dispatch:     # Also allow manual trigger
-
-jobs:
-  forecast:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v3
-
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: 🧪 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests numpy scikit-learn tensorflow
-
-      - name: 🔮 Run LSTM forecast
-        run: python forecast_lstm.py
-
-      - name: 🔄 Commit forecast.json
-        run: |
-          git config user.name "github-actions"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add forecast.json
-          git commit -m "🔄 Auto-update forecast.json (LSTM)" || echo "No changes to commit"
-
-      - name: ⬆️ Push to main branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add forecast.json
-          git commit -m "Update forecast.json"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/gabriel-uwanyirigira/lstm_model.git HEAD:main
